@@ -16,7 +16,7 @@ if (!Directory.Exists("bin"))
     Directory.CreateDirectory("bin");
 
 var Id = "dotnet";
-var Version = "6.0.36";
+var Version = "x.x.x";
 
 string getDotNetRuntimeAspNetCoreDownloadUrl(HttpClient client, string dotnetVersion, string arch)
 {
@@ -33,8 +33,7 @@ var extractionOptions = new SharpCompress.Common.ExtractionOptions()
 {
     ExtractFullPath = true,
     Overwrite = true,
-    PreserveFileTime = true,
-    PreserveAttributes = true
+    PreserveFileTime = true
 };
 
 var displayDownloadProgress = new Action<QbNet.TransferProgress>(t =>
