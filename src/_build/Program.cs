@@ -33,8 +33,7 @@ var extractionOptions = new SharpCompress.Common.ExtractionOptions()
 {
     ExtractFullPath = true,
     Overwrite = true,
-    PreserveFileTime = true,
-    PreserveAttributes = true
+    PreserveFileTime = true
 };
 
 var displayDownloadProgress = new Action<QbNet.TransferProgress>(t =>
