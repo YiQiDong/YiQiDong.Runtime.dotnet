@@ -16,7 +16,7 @@ if (!Directory.Exists("bin"))
     Directory.CreateDirectory("bin");
 
 var Id = "dotnet";
-var Version = "10.0.1";
+var Version = "6.0.36";
 
 string getDotNetRuntimeAspNetCoreDownloadUrl(HttpClient client, string dotnetVersion, string arch)
 {
