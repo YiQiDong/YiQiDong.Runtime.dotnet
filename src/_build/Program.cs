@@ -16,11 +16,11 @@ if (!Directory.Exists("bin"))
     Directory.CreateDirectory("bin");
 
 var Id = "dotnet";
-var Version = "10.0.2";
+var Version = "10.0.102";
 
-string getDotNetRuntimeAspNetCoreDownloadUrl(HttpClient client, string dotnetVersion, string arch)
+string getDotNetSdkDownloadUrl(HttpClient client, string dotnetSdkVersion, string arch)
 {
-    var url = $"https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-aspnetcore-{dotnetVersion}-{arch}-binaries";
+    var url = $"https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/sdk-{dotnetSdkVersion}-{arch}-binaries";
     var html = client.GetStringAsync(url).Result;
     var document = new HtmlAgilityPack.HtmlDocument();
     document.LoadHtml(html);
@@ -60,7 +60,7 @@ if (selectArchs == null || selectArchs.Length == 0)
 foreach (var arch in selectArchs)
 {
     Console.WriteLine($"正在打包[{arch}]...");
-    var url = getDotNetRuntimeAspNetCoreDownloadUrl(client, Version, archDict[arch]);
+    var url = getDotNetSdkDownloadUrl(client, Version, archDict[arch]);
     var tmpFileName = Path.Combine("bin", Path.GetFileName(url));
     var tmpFolder = Path.Combine("bin", $"{Id}-{Version}-{arch}");
     if (Directory.Exists(tmpFolder))
@@ -113,7 +113,8 @@ foreach (var arch in selectArchs)
             Platform = new[] { arch },
             Environment = new Dictionary<string, string>()
             {
-                ["DOTNET_ROOT"] = "$RUNTIME_DIR"
+                ["DOTNET_ROOT"] = "$RUNTIME_DIR",
+                ["DOTNET_CLI_HOME"] = "$RUNTIME_DIR"
             },
             Path = new[] { "$RUNTIME_DIR" },
             ExecuteFiles = new[] { "$RUNTIME_DIR/dotnet" },
