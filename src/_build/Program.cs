@@ -16,11 +16,12 @@ if (!Directory.Exists("bin"))
     Directory.CreateDirectory("bin");
 
 var Id = "dotnet";
-var Version = "10.0.102";
+var Version = "10.0.302";
 
 string getDotNetSdkDownloadUrl(HttpClient client, string dotnetSdkVersion, string arch)
 {
-    var url = $"https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/sdk-{dotnetSdkVersion}-{arch}-binaries";
+    var fileType = arch.StartsWith("win-") ? "zip" : "targz";
+    var url = $"https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/sdk-{dotnetSdkVersion}-{arch}-binaries-{fileType}";
     var html = client.GetStringAsync(url).Result;
     var document = new HtmlAgilityPack.HtmlDocument();
     document.LoadHtml(html);
