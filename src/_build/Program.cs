@@ -20,7 +20,11 @@ var Version = "6.0.36";
 
 string getDotNetRuntimeAspNetCoreDownloadUrl(HttpClient client, string dotnetVersion, string arch)
 {
-    var url = $"https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-aspnetcore-{dotnetVersion}-{arch}-binaries-zip";
+    var url = $"https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-aspnetcore-{dotnetVersion}-{arch}-binaries";
+    if(arch.StartsWith("windows-"))
+        url+="-zip";
+    else
+        url+="-targz";
     try
     {
         var html = client.GetStringAsync(url).Result;
