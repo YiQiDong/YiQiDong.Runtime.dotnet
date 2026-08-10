@@ -20,13 +20,21 @@ var Version = "6.0.36";
 
 string getDotNetRuntimeAspNetCoreDownloadUrl(HttpClient client, string dotnetVersion, string arch)
 {
-    var url = $"https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-aspnetcore-{dotnetVersion}-{arch}-binaries";
-    var html = client.GetStringAsync(url).Result;
-    var document = new HtmlAgilityPack.HtmlDocument();
-    document.LoadHtml(html);
-    var aNode = document.DocumentNode.SelectSingleNode("//a[@id='directLink']");
-    var href = aNode.GetAttributeValue("href", null);
-    return href;
+    var url = $"https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-aspnetcore-{dotnetVersion}-{arch}-binaries-zip";
+    try
+    {
+        var html = client.GetStringAsync(url).Result;
+        var document = new HtmlAgilityPack.HtmlDocument();
+        document.LoadHtml(html);
+        var aNode = document.DocumentNode.SelectSingleNode("//a[@id='directLink']");
+        var href = aNode.GetAttributeValue("href", null);
+        return href;
+    }
+    catch
+    {
+        Console.WriteLine("URL: " + url);
+        throw;
+    }
 }
 
 var extractionOptions = new SharpCompress.Common.ExtractionOptions()
