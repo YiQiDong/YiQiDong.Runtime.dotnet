@@ -16,25 +16,36 @@ if (!Directory.Exists("bin"))
     Directory.CreateDirectory("bin");
 
 var Id = "dotnet";
-var Version = "10.0.1";
+var Version = "3.1.32";
 
 string getDotNetRuntimeAspNetCoreDownloadUrl(HttpClient client, string dotnetVersion, string arch)
 {
     var url = $"https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-aspnetcore-{dotnetVersion}-{arch}-binaries";
-    var html = client.GetStringAsync(url).Result;
-    var document = new HtmlAgilityPack.HtmlDocument();
-    document.LoadHtml(html);
-    var aNode = document.DocumentNode.SelectSingleNode("//a[@id='directLink']");
-    var href = aNode.GetAttributeValue("href", null);
-    return href;
+    if(arch.StartsWith("windows-"))
+        url+="-zip";
+    else
+        url+="-targz";
+    try
+    {
+        var html = client.GetStringAsync(url).Result;
+        var document = new HtmlAgilityPack.HtmlDocument();
+        document.LoadHtml(html);
+        var aNode = document.DocumentNode.SelectSingleNode("//a[@id='directLink']");
+        var href = aNode.GetAttributeValue("href", null);
+        return href;
+    }
+    catch
+    {
+        Console.WriteLine("URL: " + url);
+        throw;
+    }
 }
 
 var extractionOptions = new SharpCompress.Common.ExtractionOptions()
 {
     ExtractFullPath = true,
     Overwrite = true,
-    PreserveFileTime = true,
-    PreserveAttributes = true
+    PreserveFileTime = true
 };
 
 var displayDownloadProgress = new Action<QbNet.TransferProgress>(t =>
