@@ -7,7 +7,7 @@ using YiQiDong.Core;
 
 var appFolder = QbFolder.GetAppFolder();
 if (appFolder == Environment.CurrentDirectory)
-    Environment.CurrentDirectory = Path.GetFullPath("../../../../../");
+    Environment.CurrentDirectory = Path.GetFullPath("../../../../");
 
 //准备目录变量
 var baseFolder = Environment.CurrentDirectory;
@@ -16,11 +16,15 @@ if (!Directory.Exists("bin"))
     Directory.CreateDirectory("bin");
 
 var Id = "dotnet";
-var Version = "10.0.8";
+var Version = "10.0.14";
 
 string getDotNetRuntimeAspNetCoreDownloadUrl(HttpClient client, string dotnetVersion, string arch)
 {
     var url = $"https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-aspnetcore-{dotnetVersion}-{arch}-binaries";
+    if (arch.StartsWith("windows-"))
+        url += "-zip";
+    else
+        url += "-targz";
     var html = client.GetStringAsync(url).Result;
     var document = new HtmlAgilityPack.HtmlDocument();
     document.LoadHtml(html);
