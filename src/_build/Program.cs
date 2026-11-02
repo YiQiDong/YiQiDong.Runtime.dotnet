@@ -79,7 +79,7 @@ foreach (var arch in selectArchs)
         {
             case ".zip":
                 {
-                    using (var archive = SharpCompress.Archives.Zip.ZipArchive.Open(tmpFileName))
+                    using (var archive = SharpCompress.Archives.Zip.ZipArchive.OpenArchive(tmpFileName))
                     {
                         archive.WriteToDirectory(tmpFolder, extractionOptions);
                     }
@@ -90,12 +90,12 @@ foreach (var arch in selectArchs)
                     var tarFile = Path.GetFileNameWithoutExtension(tmpFileName);
                     if (File.Exists(tarFile))
                         File.Delete(tarFile);
-                    using (var archive = SharpCompress.Archives.GZip.GZipArchive.Open(tmpFileName))
+                    using (var archive = SharpCompress.Archives.GZip.GZipArchive.OpenArchive(tmpFileName))
                     using (var gzStream = archive.Entries.First().OpenEntryStream())
                     using (var tarFs = new FileStream(tarFile, FileMode.Create))
                         gzStream.CopyTo(tarFs);
 
-                    using (var archive = SharpCompress.Archives.Tar.TarArchive.Open(tarFile))
+                    using (var archive = SharpCompress.Archives.Tar.TarArchive.OpenArchive(tarFile))
                         archive.WriteToDirectory(tmpFolder, extractionOptions);
                     File.Delete(tarFile);
                     break;
@@ -103,7 +103,7 @@ foreach (var arch in selectArchs)
         }
         Console.WriteLine($"正在打包易启动运行库文件...");
         //生成元信息文件
-        var metaObj = new YiQiDong.Core.Protocol.V1.Model.RuntimeInfo()
+        var metaObj = new YiQiDong.Protocol.V1.Model.RuntimeInfo()
         {
             Id = $"{Id}-{Version}",
             Name = Id,
@@ -131,11 +131,11 @@ foreach (var arch in selectArchs)
             WriteIndented = true
         }), Encoding.UTF8);
         //打包
-        using (var archive2 = SharpCompress.Archives.Zip.ZipArchive.Create())
+        using (var archive2 = SharpCompress.Archives.Zip.ZipArchive.CreateArchive())
         {
             archive2.AddAllFromDirectory(tmpFolder);
             archive2.SaveTo($"bin/{Id}-{Version}-{arch}_{DateTime.Now.ToString("yyyyMMddHHmmss")}.yrt",
-                new SharpCompress.Writers.WriterOptions(SharpCompress.Common.CompressionType.LZMA));
+                new SharpCompress.Writers.Zip.ZipWriterOptions(SharpCompress.Common.CompressionType.LZMA));
         }
     }
     catch
